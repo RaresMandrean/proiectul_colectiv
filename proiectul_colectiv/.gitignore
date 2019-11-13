@@ -1,0 +1,15 @@
+# IDE
+.idea/
+
+# Python
+.coverage
+*.egg-info/
+.project
+.pydevproject
+*/.pytest_cache/*
+*.pyc
+venv*/
+
+# App
+logs/
+*.log

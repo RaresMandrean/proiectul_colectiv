@@ -76,9 +76,12 @@ WSGI_APPLICATION = 'proiectul_colectiv.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'proiectul_colectiv',
+        'USER': os.getenv('POSTGRES_USER', 'proiectul_colectiv'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'proiectul_colectiv'),
+        'HOST': os.getenv('POSTGRES_HOST', '127.0.0.1'),
+    },
 }
 
 

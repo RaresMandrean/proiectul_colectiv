@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.views.generic import (
     ListView,
     DetailView,
@@ -16,11 +17,24 @@ def home(request):
     }
     return render(request, 'eventix/home.html', context)
 
+
 class EventListView(ListView):
     model = Event
     template_name = 'eventix/home.html'  # <app>/<model>_<viewtype>.html
     context_object_name = 'events'
     ordering = ['-date_posted']
+    paginate_by = 5
+
+
+class UserEventListView(ListView):
+    model = Event
+    template_name = 'eventix/user_events.html'  # <app>/<model>_<viewtype>.html
+    context_object_name = 'events'
+    paginate_by = 5
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Event.objects.filter(author=user).order_by('-date_posted')
 
 
 class EventDetailView(DetailView):

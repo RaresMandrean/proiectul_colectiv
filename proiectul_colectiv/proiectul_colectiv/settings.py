@@ -31,8 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'eventix.apps.EventixConfig',
     'users.apps.UsersConfig',
+    'eventix.apps.EventixConfig',
     'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -57,8 +57,7 @@ ROOT_URLCONF = 'proiectul_colectiv.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': []
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,13 +79,15 @@ WSGI_APPLICATION = 'proiectul_colectiv.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgres',
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', '1234'),
+        'NAME': os.getenv('POSTGRES_NAME', 'proiectul_colectiv'),
+        'USER': os.getenv('POSTGRES_USER', 'proiectul_colectiv'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'proiectul_colectiv'),
         'HOST': os.getenv('POSTGRES_HOST', '127.0.0.1'),
     },
 }
 
+# Switch to CustomUser
+AUTH_USER_MODEL = 'users.CustomUser'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

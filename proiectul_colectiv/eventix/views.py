@@ -36,7 +36,7 @@ class UserEventListView(ListView):
 
     def get_queryset(self):
         user = get_object_or_404(CustomUser, username=self.kwargs.get('username'))
-        return Event.objects.filter(author=user).order_by('-date_posted')
+        return Event.objects.filter(organiser=user).order_by('-date_posted')
 
 
 class EventDetailView(DetailView):
@@ -48,7 +48,7 @@ class EventCreateView(LoginRequiredMixin, CreateView):
     fields = ['title', 'content']
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.organiser = self.request.user
         return super().form_valid(form)
 
 
@@ -57,12 +57,12 @@ class EventUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     fields = ['title', 'content']
 
     def form_valid(self, form):
-        form.instance.author = self.request.user
+        form.instance.organiser = self.request.user
         return super().form_valid(form)
 
     def test_func(self):
         post = self.get_object()
-        if self.request.user == post.author:
+        if self.request.user == post.organiser:
             return True
         return False
 
@@ -73,7 +73,7 @@ class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def test_func(self):
         post = self.get_object()
-        if self.request.user == post.author:
+        if self.request.user == post.organiser:
             return True
         return False
 

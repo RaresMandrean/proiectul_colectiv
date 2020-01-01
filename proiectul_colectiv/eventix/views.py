@@ -10,6 +10,7 @@ from django.views.generic import (
 
 
 from eventix.models import Event
+from eventix.forms import EventForm
 from users.models import CustomUser
 
 
@@ -45,7 +46,7 @@ class EventDetailView(DetailView):
 
 class EventCreateView(LoginRequiredMixin, CreateView):
     model = Event
-    fields = ['title', 'content']
+    form_class = EventForm
 
     def form_valid(self, form):
         form.instance.organiser = self.request.user
@@ -54,7 +55,7 @@ class EventCreateView(LoginRequiredMixin, CreateView):
 
 class EventUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Event
-    fields = ['title', 'content']
+    form_class = EventForm
 
     def form_valid(self, form):
         form.instance.organiser = self.request.user

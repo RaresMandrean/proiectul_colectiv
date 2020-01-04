@@ -11,5 +11,6 @@
 venv*/
 
 # App
+media/profile_pics/
 logs/
 *.log

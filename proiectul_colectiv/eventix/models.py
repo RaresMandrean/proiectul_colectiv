@@ -1,6 +1,8 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from star_ratings.models import Rating
 
 from users.models import CustomUser
 
@@ -24,6 +26,7 @@ class Event(models.Model):
     event_date = models.DateField()
     pending_approval = models.BooleanField(default=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    ratings = GenericRelation(Rating)
 
     def __str__(self):
         return self.title

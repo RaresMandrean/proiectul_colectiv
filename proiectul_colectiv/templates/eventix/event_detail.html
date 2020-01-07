@@ -1,4 +1,5 @@
 {% extends "eventix/base.html" %}
+{% load ratings %}
 {% block content %}
   <article class="media content-section">
     <img class="rounded-circle article-img" src="{{ object.organiser.profile.image.url }}">
@@ -6,15 +7,46 @@
       <div class="article-metadata">
         <a class="mr-2" href="{% url 'user-events' object.organiser.username %}">{{ object.author }}</a>
         <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
-        {% if object.organiser == user %}
           <div>
-            <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'event-update' object.id %}">Update</a>
-            <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'event-delete' object.id %}">Delete</a>
+            {% if view.is_going is False %}
+              <a class="btn btn-success btn-sm mt-1 mb-1" data-toggle="modal" data-target="#modalRateForm">Join</a>
+            {% else %}
+              <a class="btn btn-secondary btn-sm mt-1 mb-1">Join</a>
+            {% endif %}
+            {% if object.organiser == user %}
+              <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'event-update' object.id %}">Update</a>
+              <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'event-delete' object.id %}">Delete</a>
+            {% endif %}
           </div>
-        {% endif %}
       </div>
       <h2 class="article-title">{{ object.title }}</h2>
       <p class="article-content">{{ object.content }}</p>
     </div>
   </article>
+
+  <!-- Rating Modal -->
+  <div class="modal fade" id="modalRateForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+  aria-hidden="true">
+    <div class="modal-dialog" style="max-width:30%" role="document">
+      <div class="modal-content">
+        <div class="d-flex justify-content-end modal-header" style="position:absolute;right:0">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-header text-center">
+          <h4 class="modal-title w-100 font-weight-bold">You have successfully joined the event!</h4>
+        </div>
+        <div class="modal-body mx-3">
+          <div class="md-form mb-5 d-flex justify-content-center">
+             <h5 class="d-flex justify-content-center">How likely are you to recommend this event to others?</h5>
+          </div>
+          <div class="md-form mb-5 d-flex justify-content-center">
+            {% ratings object %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Rating Modal -->
 {% endblock content %}

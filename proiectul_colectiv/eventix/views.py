@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
@@ -9,7 +10,7 @@ from django.views.generic import (
 )
 
 
-from eventix.models import Event
+from eventix.models import Event, Seat
 from eventix.forms import EventForm
 from users.models import CustomUser
 
@@ -42,6 +43,13 @@ class UserEventListView(ListView):
 
 class EventDetailView(DetailView):
     model = Event
+
+    def is_going(self):
+        try:
+            Seat.objects.get(location=self.object.location, reserved_to=self.request.user)
+            return True
+        except ObjectDoesNotExist as e:
+            return False
 
 
 class EventCreateView(LoginRequiredMixin, CreateView):

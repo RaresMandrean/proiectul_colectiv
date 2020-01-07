@@ -1,4 +1,5 @@
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
@@ -28,6 +29,10 @@ class EventListView(ListView):
     context_object_name = 'events'
     ordering = ['-date_posted']
     paginate_by = 5
+
+    def get_queryset(self):
+        filter = self.request.GET.get('text_filter', '')
+        return Event.objects.filter(Q(title__icontains=filter))
 
 
 class UserEventListView(ListView):

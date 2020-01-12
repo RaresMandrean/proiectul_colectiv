@@ -8,6 +8,9 @@
               <small class="text-muted">{{ event.date_posted|date:"F d, Y"}}</small>
             </div>
             <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
+            {% if event.poster %}
+                <img src="{{ event.poster.url }}" class="rounded mx-auto d-block" width="500px" height="300px" alt="Event presentation poster"><br><br>
+            {% endif %}
             <p class="article-content">{{ event.content }}</p>
           </div>
         </article>

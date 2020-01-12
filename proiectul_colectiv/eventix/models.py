@@ -27,6 +27,7 @@ class Event(models.Model):
     pending_approval = models.BooleanField(default=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
     ratings = GenericRelation(Rating)
+    poster = models.ImageField(upload_to="event_posters", blank=True, null=True)
 
     def __str__(self):
         return self.title

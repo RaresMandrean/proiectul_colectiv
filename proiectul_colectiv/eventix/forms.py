@@ -12,7 +12,7 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
-        fields = ('title', 'content', 'event_date', 'location')
+        fields = ('title', 'content', 'event_date', 'location', 'poster')
 
     def clean_event_date(self):
         event_date = self.cleaned_data.get('event_date')

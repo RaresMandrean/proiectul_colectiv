@@ -31,6 +31,8 @@ class EventForm(forms.ModelForm):
 
     def clean_poster(self):
         poster = self.cleaned_data.get('poster')
+        if poster == None:
+            return poster
         width, height = get_image_dimensions(poster)
         if width < 500 or height < 550:
             raise forms.ValidationError("Minimum poster resolution should be 500x550px")

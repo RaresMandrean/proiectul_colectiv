@@ -9,9 +9,18 @@
             </div>
             <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
             {% if event.poster %}
-                <img src="{{ event.poster.url }}" class="rounded mx-auto d-block" width="500px" height="300px" alt="Event presentation poster"><br><br>
+                <a href="{% url 'event-detail' event.id %}">
+                <img src="{{ event.poster.url }}" class="rounded mx-auto d-block" width="500px" height="300px" alt="Event presentation poster">
+                </a>
             {% endif %}
-            <p class="article-content">{{ event.content }}</p>
+            {% if event.content|length > 50 %}
+                <p class="article-content">
+                {{ event.content|safe|truncatewords:"50"|linebreaks }}
+                <a href="{% url 'event-detail' event.id %}">Read more...</a>
+                </p>
+            {% else %}
+                <br><p class="article-content">{{ event.content }}</p>
+            {% endif %}
           </div>
         </article>
     {% endfor %}

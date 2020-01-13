@@ -1,17 +1,29 @@
 {% extends "eventix/base.html" %}
+{% load ratings %}
 {% block content %}
     {% for event in events %}
+        <style>
+        .hide-rating-info .star-ratings-rating-average { display: none; } .star-ratings-rating-count { display: none; }
+        .star-ratings-rating-user { display: none; }
+        </style>
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
               <a class="mr-2" href="{% url 'user-events' event.organiser.username %}">{{ event.organiser }}</a>
               <small class="text-muted">{{ event.date_posted|date:"F d, Y"}}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
+            <div class="floating-divs" style="overflow:hidden">
+                <div class="floating-title" style="float: left">
+                    <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
+                </div>
+                <div class="hide-rating-info" style="float: right">{% ratings event read_only=True %}</div>
+            </div>
             {% if event.poster %}
+                <div class="text-center">
                 <a href="{% url 'event-detail' event.id %}">
-                <img src="{{ event.poster.url }}" class="rounded mx-auto d-block" width="500px" height="300px" alt="Event presentation poster">
+                <img src="{{ event.poster.url }}" class="rounded" width="500px" height="300px" alt="Event presentation poster">
                 </a>
+                </div>
             {% endif %}
             {% if event.content|length > 50 %}
                 <p class="article-content">

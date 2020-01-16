@@ -1,5 +1,6 @@
 {% extends "eventix/base.html" %}
 {% load ratings %}
+{% load app_filters %}
 {% block content %}
     {% for event in events %}
         <style>
@@ -64,7 +65,7 @@
             <p class='text-muted'>You can put any information here you'd like.
               <ul class="list-group">
                 <li class="list-group-item list-group-item-light">Recommended Events:
-                    {% if events|length == 0 %}
+                    {% if events|length == 0 or events|length == events|count_none %}
                         No Events to recommend yet...
                     {% else %}
                         <div id="myCarousel" class="carousel slide" data-ride="carousel">

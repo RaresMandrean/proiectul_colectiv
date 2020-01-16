@@ -1,7 +1,8 @@
 {% extends "eventix/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-    <input class="content-section">
+    <font color="red">You need to complete the event map first and click "Submit" and then "Post"</font>
+    <div class="content-section">
         <form enctype="multipart/form-data" method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
@@ -26,6 +27,8 @@
     <button onclick="putPrices2()">PutPrices</button>
     <font id='warningPrice2' color="red"></font><br><br>
     <div class="mapDiv"></div>
+    <button onclick="SubmitLocation()">Submit</button>
+    </div>
     <script>
         var cont=0;
         var isGenerated=false;

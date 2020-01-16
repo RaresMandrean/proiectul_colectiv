@@ -58,3 +58,71 @@
 
     {% endif %}
 {% endblock content %}
+{% block content-sidebar %}
+    <div class="content-section">
+            <h3>Info Sidebar</h3>
+            <p class='text-muted'>You can put any information here you'd like.
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light">Recommended Events:
+                    {% if events|length == 0 %}
+                        No Events to recommend yet...
+                    {% else %}
+                        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                          <!-- Indicators -->
+                          <ol class="carousel-indicators">
+                              {% for event in events %}
+                                {% if forloop.first %}
+                                    {% if event.poster %}
+                                        <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}" class="active"></li>
+                                    {% endif %}
+                                {% else %}
+                                    {% if event.poster %}
+                                        <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}"></li>
+                                    {% endif %}
+                                {% endif %}
+                            {%  endfor %}
+                          </ol>
+                        <div class="carousel-inner">
+                            {% for event in events %}
+                                {% if forloop.first %}
+                                    {% if event.poster %}
+                                        <div class="carousel-item active">
+                                        <div class="text-center">
+                                        {{event.title}}</div>
+                                        <a href="{% url 'event-detail' event.id %}">
+                                        <img src="{{ event.poster.url }}" style="width:100%;height:300px" alt="Event presentation poster">
+                                        </a>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    {% if event.poster %}
+                                        <div class="carousel-item">
+                                        <div class="text-center">
+                                        {{event.title}}</div>
+                                        <a href="{% url 'event-detail' event.id %}">
+                                        <img src="{{ event.poster.url }}" style="width:100%;height:300px" alt="Event presentation poster">
+                                        </a>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {%  endfor %}
+                        </div>
+
+                          <!-- Left and right controls -->
+                          <a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                          </a>
+                          <a class="carousel-control-next" href="#myCarousel" data-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                          </a>
+                        </div>
+                {% endif %}
+                </li>
+                <li class="list-group-item list-group-item-light">Announcements</li>
+                <li class="list-group-item list-group-item-light">Calendars</li>
+                <li class="list-group-item list-group-item-light">etc</li>
+              </ul>
+            </p>
+    </div>
+
+{% endblock %}

@@ -1,5 +1,3 @@
-//import "jQuery.js";
-
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -15,7 +13,6 @@ function getCookie(name) {
     }
     return cookieValue;
 }
-
 $.ajaxSetup({
     beforeSend: function(xhr, settings) {
         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
@@ -25,15 +22,9 @@ $.ajaxSetup({
     }
 });
 var csrftoken = getCookie('csrftoken');
-//$(document).ready();
-        //var django = {
-        //"jQuery": jQuery.noConflict(true)
-        //};
-        //var jQuery = django.jQuery;
-        //var $=jQuery;
-        var cont=0;
-        var isGenerated=false;
-        var n,m;
+var cont=0;
+var isGenerated=false;
+var n,m;
         function putPrices1(){
             if(isGenerated===true)
             {
@@ -88,7 +79,6 @@ var csrftoken = getCookie('csrftoken');
                 else document.getElementById("warningPrice2").textContent="The values are incorrect !!";
             }
         }
-
         function clik(gridBlockId){
             if(document.getElementById(gridBlockId).style.backgroundColor==="gray") {
                 cont=cont+1;document.getElementById(gridBlockId).style.background = "green";
@@ -182,20 +172,39 @@ var csrftoken = getCookie('csrftoken');
         }
         function getLocation(){
             console.log("getLocation has been triggered");
-            var arr=["10","12"];
+            var locationName=document.getElementById("name").value;
+            var locationCity=document.getElementById("city").value;
+            var locationAddress=document.getElementById("address").value;
+            var mapWidth=document.getElementById("width").value;
+            var mapHeight=document.getElementById("height").value;
+            var arr=[];
+            var location={name: locationName, city: locationCity, address: locationAddress, maximum_number_of_seats: Number(mapWidth)*Number(mapHeight)};
+            arr.push(location);
+            var seats=document.getElementsByClassName("grid-item");
+            for(var i=0;i<seats.length;i++){
+                var seat;
+                var splitted;
+                if(seats[i].style.background==="green"){
+                    splitted=seats[i].textContent.split("\r\n ");
+                    seat={position:i,location:"",price:Number(splitted[2].substring(0,splitted[2].length-1)),reserved_to:"",special_seat:false}
+                    arr.push(seat);
+                }
+                if(seats[i].style.background==="red") {
+                    splitted=seats[i].textContent.split("\r\n ");
+                    seat={position:i,location:"",price:Number(splitted[2].substring(0,splitted[2].length-1)),reserved_to:"",special_seat:true}
+                    arr.push(seat);
+                }
+            }
             return JSON.stringify(arr);
         }
         $(document).ready();
-            console.log("intra aiciiiii");
-            //$(document.body).on('click','.event-submitLocation',
-                function eventSubmitLocation() {
-                    console.log("intra aici");
-                    $.ajax({
-                        method: "POST",
-                        url: "EventAddSeatsLocation",
-                        dataType: "JSON",
-                        data: getLocation(),
-                        success: alert("It worked"),
-                    });
-                }
-            //});
+        function eventSubmitLocation() {
+            console.log("intra aici");
+            $.ajax({
+                method: "POST",
+                url: "EventAddSeatsLocation",
+                dataType: "JSON",
+                data: getLocation(),
+                success: alert("It worked"),
+            });
+        }

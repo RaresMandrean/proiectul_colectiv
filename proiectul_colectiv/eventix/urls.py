@@ -5,6 +5,7 @@ from .views import (
     EventCreateView,
     EventUpdateView,
     EventDeleteView,
+    eventAddSeatsLocation,
     UserEventListView
 )
 from . import views
@@ -16,5 +17,6 @@ urlpatterns = [
     path('event/new/', EventCreateView.as_view(), name='event-create'),
     path('event/<int:pk>/update/', EventUpdateView.as_view(), name='event-update'),
     path('event/<int:pk>/delete/', EventDeleteView.as_view(), name='event-delete'),
+    path('event/new/EventAddSeatsLocation', views.eventAddSeatsLocation, name='event-addSeatsLocation'),
     path('about/', views.about, name='eventix-about'),
 ]

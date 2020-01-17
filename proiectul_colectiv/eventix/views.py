@@ -8,9 +8,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-
-
-from eventix.models import Event, Seat
+from eventix.models import Event, Seat, Location
 from eventix.forms import EventForm
 from users.models import CustomUser
 
@@ -86,6 +84,29 @@ class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+class EventAddSeatsLocation(LoginRequiredMixin, CreateView):
+    model = Location
+    form_class = EventForm
+    def form_valid(self,request):
+        print("INTRA AICI2")
+        if request.is_ajax():
+            print(request.POST)
+            #location = Location.objects.create_location("asdsa", "asda", "asdas", 123)
+            #location=Location.objects.create(name="sasd",city="asdas",address="dsasda",maximum_number_of_seats=200)
+            #print(location)
+            return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
+        return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
+
+def eventAddSeatsLocation(request):
+    model = Location
+    print("INTRA AICI")
+    if request.is_ajax():
+        print(request.POST)
+        #location=Location.objects.create_location("asdsa","asda","asdas",123)
+        location = Location.objects.create(name="sasd", city="asdas", address="dsasda", maximum_number_of_seats=200)
+        print(location)
+        return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
+    return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
 
 def about(request):
     return render(request, 'eventix/about.html', {'title': 'About'})

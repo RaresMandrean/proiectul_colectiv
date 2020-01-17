@@ -24,7 +24,7 @@ class EventForm(forms.ModelForm):
     def clean(self):
         location = self.cleaned_data.get('location')
         event_date = self.cleaned_data.get('event_date')
-        for event in Event.objects.filter(location=location):
+        for event in Event.objects.filter(location=location).exclude(pk=self.instance.pk):
             if event.event_date == event_date:
                 raise forms.ValidationError("This location is already reserved for another event on that date!")
         return super().clean()

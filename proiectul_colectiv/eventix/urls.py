@@ -5,6 +5,7 @@ from .views import (
     EventCreateView,
     EventUpdateView,
     EventDeleteView,
+    eventAddSeatsLocation,
     UserEventListView,
     OrganiserListView,
     change_organiser_status
@@ -20,5 +21,6 @@ urlpatterns = [
     path('event/<int:pk>/delete/', EventDeleteView.as_view(), name='event-delete'),
     path('organisers/', OrganiserListView.as_view(), name='event-organisers'),
     path('organisers/organiser-status/', change_organiser_status, name='organiser-status'),
+    path('event/new/EventAddSeatsLocation', views.eventAddSeatsLocation, name='event-addSeatsLocation'),
     path('about/', views.about, name='eventix-about'),
 ]

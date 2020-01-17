@@ -42,7 +42,7 @@ class Event(models.Model):
 
 class Seat(models.Model):
     position = models.PositiveIntegerField()
-    location = models.OneToOneField(Location, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.SET_NULL, null=True, blank=True)
     price = models.PositiveIntegerField()
     reserved_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
-    special_seat = models.BooleanField(default=False)  # devine gri si nu poate fi selectat daca e True pe "harta"
+    special_seat = models.BooleanField(default=False)  # devine rosu si nu poate fi selectat daca e True pe "harta"

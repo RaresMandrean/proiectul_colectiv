@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
@@ -12,10 +13,10 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-
+from eventix.models import Event, Seat, Location
 from eventix.forms import EventForm
-from eventix.models import Event
 from users.models import CustomUser
+import json
 
 
 def home(request):
@@ -47,6 +48,12 @@ class UserEventListView(ListView):
 class EventDetailView(DetailView):
     model = Event
 
+    def is_going(self):
+        try:
+            Seat.objects.get(location=self.object.location, reserved_to=self.request.user)
+            return True
+        except ObjectDoesNotExist as e:
+            return False
 
 class EventCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Event
@@ -85,6 +92,18 @@ class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+
+def eventAddSeatsLocation(request):
+    if request.is_ajax():
+        requestString=""
+        for x in request.POST.dict():
+            requestString=x
+        requestJSON=json.loads(requestString)
+        location = Location.objects.create(name=requestJSON[0]["name"], city=requestJSON[0]["city"], address=requestJSON[0]["address"], maximum_number_of_seats=requestJSON[0]["maximum_number_of_seats"])
+        for i in range(1, len(requestJSON)):
+            Seat.objects.create(position=requestJSON[i]["position"],location=location,price=requestJSON[i]["price"],special_seat=requestJSON[i]["special_seat"])
+        return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
+    return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
 
 class OrganiserListView(LoginRequiredMixin, ListView):
     model = CustomUser

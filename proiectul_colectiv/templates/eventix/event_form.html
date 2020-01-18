@@ -1,6 +1,7 @@
 {% extends "eventix/base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+    <font color="red">You need to complete the event map first and click "Submit" and then "Post"</font>
     <div class="content-section">
         <form enctype="multipart/form-data" method="POST">
             {% csrf_token %}
@@ -11,6 +12,27 @@
             <div class="form-group">
                 <button class="btn btn-outline-info" type="submit">Post</button>
             </div>
+
         </form>
+        {% csrf_token %}
+        Location
+        <label for="name">Name</label><br><input type="text" id="name" name="name"><br>
+        <label for="city">City</label><br><input type="text" id="city" name="city"><br>
+        <label for="address">Address</label><br><input type="text" id="address" name="address"><br>
+        <label for="height">Height</label><input type="text" id="height" name="height">
+        <label for="width">Width</label><input type="text" id="width" name="width">
+        <button onclick="generateMap()">Generate Map</button><br>
+        <label for="price1">Price Value</label><input type="text" id="price1"><br>
+        <label for="minLimit">LimitSeats</label><input type="text" id="minLimit">
+        <label for="maxLimit">-></label><input type="text" id="maxLimit">
+        <button onclick="putPrices1()">PutPrices</button>
+        <font id='warningPrice1' color="red"></font><br>
+        <label for="price2">Price Value</label><input type="text" id="price2"><br>
+        <label for="seatsSeparated">Seats</label><input type="text" id="seatsSeparated">
+        <button onclick="putPrices2()">PutPrices</button>
+        <font id='warningPrice2' color="red"></font><br><br>
+        <div class="mapDiv"></div>
+        <button id="event-submitLocation" onclick="eventSubmitLocation();">Submit</button>
     </div>
+
 {% endblock content %}

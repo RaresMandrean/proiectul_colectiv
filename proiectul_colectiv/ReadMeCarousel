@@ -1,0 +1,23 @@
+1. GO to pgadmin and perform this in a query editor
+  Truncate users_customuser CASCADE;
+  TRUNCATE eventix_location CASCADE;
+  TRUNCATE eventix_event CASCADE
+  ALTER SEQUENCE users_customuser_id_seq RESTART WITH 1;
+  ALTER SEQUENCE eventix_location_id_seq RESTART WITH 1;
+  ALTER SEQUENCE eventix_event_id_seq RESTART WITH 1;
+  
+2. Go to terminal:
+  python3 manage.py shell
+  exec(open('ai_data_to_db').read())
+
+3. Login pe primul user:
+  username27355d
+  test12345
+
+4. Trebuie sa adaugati poze la evenimentele urmatoare:
+  1. 23------Five-day Specialist MBCT Training--------2020-02-08
+  5------8 week MBCT-L course--------2020-01-10
+  35------Seven-day Teacher Training Retreat (Level 1)--------2020-03-21
+  41------Safeguarding Workshop--------2020-03-28
+  24------Mindfulness: Deepening and Sustaining Mindfulness for Life: Beyond the 8-week Course--------2020-02-13
+

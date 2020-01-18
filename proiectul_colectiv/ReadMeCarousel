@@ -8,7 +8,7 @@
   
 2. Go to terminal:
   python3 manage.py shell
-  exec(open('ai_data_to_db').read())
+  exec(open('eventix/ai_data_to_db.py').read())
 
 3. Login pe primul user:
   username27355d

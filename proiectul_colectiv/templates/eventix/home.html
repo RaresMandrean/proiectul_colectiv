@@ -2,6 +2,53 @@
 {% load ratings %}
 {% load app_filters %}
 {% block content %}
+    <form method="GET">
+        <div class="row mb-4">
+            <div class="form-group col-md-8">
+                <input name="text_filter" type="text" value="{{request.GET.text_filter}}" placeholder="Search for events" class="form-control form-control-underlined">
+            </div>
+            <div class="col-md-4 container" style="display:flex;flex-direction:row;justify-content:center">
+                <button type="submit" class="btn btn-success rounded-pill-custom btn-block shadow-sm">Search</button>
+                <button type="button" class="btn btn-success btn-circle btn-lg collapsible"><i class="glyphicon glyphicon-link"></i></button>
+            </div>
+        </div>
+        <div class="collapsible-content">
+            <div class="container inline-div">
+                <label class="inline-item label-item" for="organiser_name">Organiser Name:</label>
+                <input id="organiser_name" class="form-control form-control-underlined col-md-6 inline-item" name="organiser_name" type="text" value="{{request.GET.organiser_name}}">
+            </div>
+            <div class="container inline-div">
+                <label class="inline-item" for="location_name">Location:</label>
+                <input id="location_name" class="form-control form-control-underlined col-md-6 inline-item" name="location_name" type="text" value="{{request.GET.location_name}}">
+            </div>
+            <div class="container inline-div">
+                <label class="inline-item" for="minimum_rating">Minimum Rating:</label>
+                <input id="minimum_rating" class="form-control form-control-underlined col-md-6 inline-item" name="minimum_rating" min="0" max="5" type="number" value="{{request.GET.minimum_rating}}">
+            </div>
+            <div class="container-inline-div">
+                <label class="inline-item" for="start_date">From Date:</label>
+                <input id="start_date" type="date" name="start_date" class="col-md-6" value="{{request.GET.start_date}}">
+            </div>
+            <div class="container-inline-div">
+                <label class="inline-item" for="end_date">To Date:</label>
+                <input id="end_date" type="date" name="end_date" class="col-md-6 inline-item" value="{{request.GET.end_date}}">
+            </div>
+        </div>
+
+        <script>
+            var coll = document.getElementsByClassName("collapsible")[0];
+            coll.addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = document.getElementsByClassName("collapsible-content")[0];
+                if (content.style.maxHeight){
+                  content.style.maxHeight = null;
+                } else {
+                  content.style.maxHeight = content.scrollHeight + "px";
+                }
+              });
+        </script>
+    </form>
+
     {% for event in events %}
         <style>
             .hide-rating-info .star-ratings-rating-average {
@@ -47,27 +94,31 @@
             </div>
         </article>
     {% endfor %}
-    {% if is_paginated %}
-
-        {% if page_obj.has_previous %}
-            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% if events.has_other_pages %}
+    <ul class="pagination">
+        {% if events.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ events.previous_page_number }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">
+                <i class="material-icons">Previous</i>
+            </a>
+        {% else %}
+            <a class="btn btn-outline-info mb-4 disabled" href="#!"><i class="material-icons">Previous</i></a>
         {% endif %}
-
-        {% for num in page_obj.paginator.page_range %}
-            {% if page_obj.number == num %}
-                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
-            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% for num in events.paginator.page_range %}
+            {% if events.number == num %}
+                <a class="btn btn-outline-info mb-4" href="#!">{{ num }}</a>
+            {% else %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ num }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">{{ num }}</a>
             {% endif %}
         {% endfor %}
-
-        {% if page_obj.has_next %}
-            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% if events.has_next %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ events.next_page_number }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">
+                <i class="material-icons">Next</i>
+            </a>
+        {% else %}
+            <a class="btn btn-outline-info mb-4 disabled" href="#!"><i class="material-icons">Next</i></a>
         {% endif %}
-
-    {% endif %}
+    </ul>
+{% endif %}
 {% endblock content %}
 {% block content-sidebar %}
     <div class="content-section">

@@ -10,7 +10,8 @@ class Location(models.Model):  # asta ar fi sala
     name = models.CharField(max_length=30)
     city = models.CharField(max_length=40)
     address = models.CharField(max_length=40)
-    maximum_number_of_seats = models.IntegerField()
+    width = models.PositiveIntegerField(default=0)
+    height = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.name
@@ -37,7 +38,7 @@ class Event(models.Model):
 
 class Seat(models.Model):
     position = models.PositiveIntegerField()
-    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     price = models.PositiveIntegerField()
     reserved_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     special_seat = models.BooleanField(default=False)  # devine rosu si nu poate fi selectat daca e True pe "harta"

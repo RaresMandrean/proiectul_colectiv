@@ -1,0 +1,55 @@
+{% extends "eventix/base.html" %}
+{% load static %}
+{% load group_checks %}
+{% block content %}
+    {% for user in page_obj %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ user.profile.image.url }}">
+            <div class="media-body">
+                <div class="article-metadata">
+                    <h2 class="article-title username" id="{{ user.username }}">{{ user.username }}</h2>
+                    <p class="article-content">{{ user.email }}</p>
+                </div>
+                <div class="row">
+                    {% if user|is_approved_organiser %}
+                        <button class="btn btn-success" name="{{ user.username }}" disabled>Approve</button>
+                    {% else %}
+                        <button class="btn btn-outline-success" name="{{ user.username }}">Approve</button>
+                    {% endif %}
+                    {% if user|is_rejected_organiser %}
+                        <button class="btn btn-danger" name="{{ user.username }}" disabled>Reject</button>
+                    {% else %}
+                        <button class="btn btn-outline-danger" name="{{ user.username }}">Reject</button>
+                    {% endif %}
+                </div>
+            </div>
+        </article>
+    {% endfor %}
+    <nav>
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item>">
+                    <a class="page-link text-secondary" href="?page=1">&laquo;</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link text-secondary" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            <li class="page-item">
+                <span class="page-link green text-secondary">{{ page_obj.number }}/{{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link text-secondary" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item>">
+                    <a class="page-link text-secondary" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+{% endblock content %}
+
+
+

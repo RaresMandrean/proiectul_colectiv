@@ -6,11 +6,11 @@
     <form method="GET">
         <div class="row mb-4">
             <div class="form-group col-md-8">
-                <input name="text_filter" type="text" value="{{request.GET.text_filter}}" placeholder="Search for events" class="form-control form-control-underlined">
+                <input name="text_filter" type="text" value="{{request.GET.text_filter}}" placeholder="Search for events" class="search-bar">
             </div>
             <div class="col-md-4 container" style="display:flex;flex-direction:row;justify-content:center">
-                <button type="submit" class="btn btn-success rounded-pill-custom btn-block shadow-sm">Search</button>
-                <button type="button" class="btn btn-success btn-circle btn-lg collapsible"><i class="glyphicon glyphicon-link"></i></button>
+                <button type="submit" class="btn-search btn btn-block shadow-sm">Search</button>
+                <button type="button" class="btn-plus btn btn-success btn-circle btn-lg collapsible"><i class="glyphicon glyphicon-link"></i></button>
             </div>
         </div>
         <div class="collapsible-content">
@@ -26,11 +26,11 @@
                 <label class="inline-item" for="minimum_rating">Minimum Rating:</label>
                 <input id="minimum_rating" class="form-control form-control-underlined col-md-6 inline-item" name="minimum_rating" min="0" max="5" type="number" value="{{request.GET.minimum_rating}}">
             </div>
-            <div class="container-inline-div">
+            <div class="container inline-div">
                 <label class="inline-item" for="start_date">From Date:</label>
-                <input id="start_date" type="date" name="start_date" class="col-md-6" value="{{request.GET.start_date}}">
+                <input id="start_date" type="date" name="start_date" class="col-md-6 inline-item" value="{{request.GET.start_date}}">
             </div>
-            <div class="container-inline-div">
+            <div class="container inline-div">
                 <label class="inline-item" for="end_date">To Date:</label>
                 <input id="end_date" type="date" name="end_date" class="col-md-6 inline-item" value="{{request.GET.end_date}}">
             </div>
@@ -60,63 +60,66 @@
                 display: none;
             }
 
+
             .star-ratings-rating-user {
                 display: none;
             }
         </style>
-        <article class="media content-section">
-            <div class="media-body">
-                <div class="article-metadata">
-                    <a class="mr-2" href="{% url 'user-events' event.organiser.username %}">{{ event.organiser }}</a>
-                    <small class="text-muted">{{ event.date_posted|date:"F d, Y" }}</small>
-                </div>
-                <div class="floating-divs" style="overflow:hidden">
-                    <div class="floating-title" style="float: left">
-                        <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
+        <article class=" media main-content-section">
+            <div class = "padding-section">
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="{% url 'user-events' event.organiser.username %}">{{ event.organiser }}</a>
+                        <small class="text-muted">{{ event.date_posted|date:"F d, Y" }}</small>
                     </div>
-                    <div class="hide-rating-info" style="float: right">{% ratings event read_only=True %}</div>
-                </div>
-                {% if event.poster %}
-                    <div class="text-center">
-                        <a href="{% url 'event-detail' event.id %}">
-                            <img src="{{ event.poster.url }}" class="rounded" width="500px" height="300px"
-                                 alt="Event presentation poster">
-                        </a>
+                    <div class="floating-divs" style="overflow:hidden">
+                        <div class="floating-title" style="float: left">
+                            <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
+                        </div>
+                        <div class="hide-rating-info" style="float: right">{% ratings event read_only=True %}</div>
                     </div>
-                {% endif %}
-                {% if event.content|length > 50 %}
-                    <p class="article-content">
-                        {{ event.content|safe|truncatewords:"50"|linebreaks }}
-                        <a href="{% url 'event-detail' event.id %}">Read more...</a>
-                    </p>
-                {% else %}
-                    <br><p class="article-content">{{ event.content }}</p>
-                {% endif %}
+                    {% if event.poster %}
+                        <div class="text-center">
+                            <a href="{% url 'event-detail' event.id %}">
+                                <img src="{{ event.poster.url }}" class="rounded" width="500px" height="300px"
+                                     alt="Event presentation poster">
+                            </a>
+                        </div>
+                    {% endif %}
+                    {% if event.content|length > 50 %}
+                        <p class="article-content">
+                            {{ event.content|safe|truncatewords:"50"|linebreaks }}
+                            <a href="{% url 'event-detail' event.id %}">Read more...</a>
+                        </p>
+                    {% else %}
+                        <br><p class="article-content">{{ event.content }}</p>
+                    {% endif %}
+                </div>
             </div>
         </article>
     {% endfor %}
     {% if events.has_other_pages %}
     <ul class="pagination">
         {% if events.has_previous %}
-            <a class="btn btn-outline-info mb-4" href="?page={{ events.previous_page_number }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">
-                <i class="material-icons">Previous</i>
+            <a class="btn-colour btn btn-outline-info mb-4" href="?page={{ events.previous_page_number }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">
+                <p class="material-icons">Previous</p>
             </a>
         {% else %}
-            <a class="btn btn-outline-info mb-4 disabled" href="#!"><i class="material-icons">Previous</i></a>
+            <a class="btn-colour-disabled btn btn-outline-info mb-4" href="#!"><p class="material-icons">Previous</p></a>
         {% endif %}
         {% for num in events.paginator.page_range %}
             {% if events.number == num %}
-                <a class="btn btn-outline-info mb-4" href="#!">{{ num }}</a>
+                <a class="btn-colour btn btn-outline-info mb-4" href="#!">{{ num }}</a>
             {% else %}
-                <a class="btn btn-outline-info mb-4" href="?page={{ num }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">{{ num }}</a>
+                <a class="btn-colour btn btn-outline-info mb-4" href="?page={{ num }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">{{ num }}</a>
             {% endif %}
         {% endfor %}
         {% if events.has_next %}
-            <a class="btn btn-outline-info mb-4" href="?page={{ events.next_page_number }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">
-                <i class="material-icons">Next</i>
+            <a class="btn-colour btn btn-outline-info mb-4" href="?page={{ events.next_page_number }}{% if request.GET.text_filter and request.GET.text_filter != "" %}&text_filter={{ request.GET.text_filter }}{% endif %}{% if request.GET.organiser_name and request.GET.organiser_name != "" %}&organiser_name={{ request.GET.organiser_name }}{% endif %}{% if request.GET.location_name and request.GET.location_name != "" %}&location_name={{ request.GET.location_name }}{% endif %}{% if request.GET.minimum_rating and request.GET.minimum_rating != "" %}&minimum_rating={{ request.GET.minimum_rating }}{% endif %}{% if request.GET.start_date and request.GET.start_date != "" %}&start_date={{ request.GET.start_date }}{% endif %}{% if request.GET.end_date and request.GET.end_date != "" %}&end_date={{ request.GET.end_date }}{% endif %}">
+                <p class="material-icons">Next</p>
             </a>
         {% else %}
-            <a class="btn btn-outline-info mb-4 disabled" href="#!"><i class="material-icons">Next</i></a>
+            <a class="btn-colour-disabled btn btn-outline-info mb-4" href="#!"><p class="material-icons">Next</p></a>
         {% endif %}
     </ul>
 {% endif %}

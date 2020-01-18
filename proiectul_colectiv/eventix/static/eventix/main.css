@@ -82,3 +82,71 @@ a.article-title:hover {
 .account-heading {
   font-size: 2.5rem;
 }
+
+.form-control:focus {
+  box-shadow: none;
+  background-color: #fafafa;
+}
+
+.form-control-underlined {
+  border-width: 0;
+  border-bottom-width: 1px;
+  border-radius: 0;
+  padding-left: 0;
+  background-color: #fafafa;
+}
+
+.rounded-pill-custom {
+    border-radius: 500px;
+}
+
+.btn-circle.btn-lg {
+  width: 50px;
+  height: 50px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 25px;
+}
+
+.collapsible {
+  color: white;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 15px;
+}
+
+.collapsible:after {
+  content: '\002B';
+  color: white;
+  font-weight: bold;
+  float: right;
+  margin: 5px;
+}
+
+.active:after {
+  content: "\2212";
+}
+
+.collapsible-content {
+  padding: 0 18px;
+  margin-bottom: 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.inline-div {
+    display: flex;
+    flex-direction:row;
+}
+
+.inline-item {
+    margin: 10px;
+}
+
+.label-item {
+    margin-top:50px;
+}

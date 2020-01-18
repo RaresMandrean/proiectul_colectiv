@@ -98,7 +98,7 @@ def eventAddSeatsLocation(request):
         for x in request.POST.dict():
             requestString=x
         requestJSON=json.loads(requestString)
-        location = Location.objects.create(name=requestJSON[0]["name"], city=requestJSON[0]["city"], address=requestJSON[0]["address"], maximum_number_of_seats=requestJSON[0]["maximum_number_of_seats"])
+        location = Location.objects.create(name=requestJSON[0]["name"], city=requestJSON[0]["city"], address=requestJSON[0]["address"], width=requestJSON[0]["width"], height=requestJSON[0]["height"])
         for i in range(1, len(requestJSON)):
             Seat.objects.create(position=requestJSON[i]["position"],location=location,price=requestJSON[i]["price"],special_seat=requestJSON[i]["special_seat"])
         return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})

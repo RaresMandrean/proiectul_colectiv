@@ -20,7 +20,8 @@ def add_locations_to_db():
         location.name = row['NAME']
         location.city = row['CITY']
         location.address = row['ADDRESS']
-        location.maximum_number_of_seats = random.randint(20, 1000)
+        location.height = random.randint(20, 1000)
+        location.width = random.randint(20, 1000)
         location.save()
 
 

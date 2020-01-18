@@ -8,9 +8,9 @@ from users.models import CustomUser
 
 
 class Location(models.Model):  # asta ar fi sala
-    name = models.CharField(max_length=30)
-    city = models.CharField(max_length=40)
-    address = models.CharField(max_length=40)
+    name = models.CharField(max_length=100)
+    city = models.CharField(max_length=100)
+    address = models.CharField(max_length=100)
     maximum_number_of_seats = models.IntegerField()
 
     def __str__(self):
@@ -18,7 +18,7 @@ class Location(models.Model):  # asta ar fi sala
 
 
 class Event(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=150)
     content = models.TextField()
     date_posted = models.DateField(default=timezone.now)
     organiser = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -42,3 +42,4 @@ class Seat(models.Model):
     price = models.PositiveIntegerField()
     reserved_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     special_seat = models.BooleanField(default=False)  # devine gri si nu poate fi selectat daca e True pe "harta"
+

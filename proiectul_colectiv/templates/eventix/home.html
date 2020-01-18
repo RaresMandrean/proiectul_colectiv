@@ -1,6 +1,7 @@
 {% extends "eventix/base.html" %}
 {% load ratings %}
 {% load app_filters %}
+{% load recommended_events %}
 {% block content %}
     {% for event in events %}
         <style>
@@ -81,7 +82,7 @@
                     <div id="myCarousel" class="carousel slide" data-ride="carousel">
                         <!-- Indicators -->
                         <ol class="carousel-indicators">
-                            {% for event in events %}
+                            {% for event in user|recommended_events %}
                                 {% if forloop.first %}
                                     {% if event.poster %}
                                         <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}"

@@ -1,0 +1,16 @@
+{% extends "eventix/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<label id='label1'></label>
+<label id='label2'></label>
+<button onclick="generateMapDetails();">See the Map</button>
+<br><br>
+Selected Seats:
+<label id='labelSelectedSeats'></label>
+<br><br>
+Total Price:
+<label id='totalPrice'></label>
+<br><br>
+
+{% endblock content %}

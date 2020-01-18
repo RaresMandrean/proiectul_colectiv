@@ -203,3 +203,113 @@ var n,m;
                 success: alert("Location has been added !"),
             });
         }
+var isGenerated = false;
+var selectedSeats = [];
+var isSelected = false;
+
+function clik1(gridBlockId) {
+    var txtCnt = "";
+    var gridItem = document.getElementById(gridBlockId);
+    var splitted = gridItem.textContent.split("\r\n ");
+    if (splitted[0] != "res") {
+        if (document.getElementById(gridBlockId).style.backgroundColor == "green" && isSelected == false) {
+            document.getElementById(gridBlockId).style.background = "red";
+            isSelected = true;
+            selectedSeats.push(document.getElementById(gridBlockId));
+        } else if (document.getElementById(gridBlockId).style.backgroundColor == "red") {
+            document.getElementById(gridBlockId).style.background = "green";
+            isSelected = false;
+            for (var i = 0; i < selectedSeats.length; i++) {
+                if (selectedSeats[i] === document.getElementById(gridBlockId)) {
+                    selectedSeats.splice(i, 1);
+                }
+            }
+        }
+        var selected = selectedSeats[0].textContent.split("\r\n ")[1];
+        document.getElementById('labelSelectedSeats').innerHTML = selected;
+    }
+    calculatePriceDetails();
+}
+
+function setMapDetails() {
+    var i;
+    var elements = document.getElementsByClassName('grid-item');
+    for (i = 0; i < elements.length; i++) {
+        if (elements[i].style.backgroundColor == "gray") {
+            elements[i].style.visibility = 'hidden';
+        }
+    }
+}
+
+function generateMapDetails() {
+    var n, m, i, j;
+    isGenerated = true;
+    n = 5
+    m = 5
+    document.getElementById('label1').innerHTML = n;
+    document.getElementById('label2').innerHTML = m;
+    var div = document.createElement('div');
+    div.className = 'grid-container'
+    div.id = 'container'
+    document.body.appendChild(div);
+    var nrColumns = "";
+    for (i = 0; i < m - 1; i++)
+        nrColumns = nrColumns + "auto ";
+    nrColumns = nrColumns + "auto";
+    document.getElementById("container").style.gridTemplateColumns = nrColumns;
+    var idGridBlock = 0;
+    var noReserved = 0;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            if (i % 4 == 0) {
+                var div1 = document.createElement('div');
+                div1.className = 'grid-item';
+                div1.setAttribute('style', 'white-space: pre;');
+                div1.textContent = " " + "\r\n  " + "\r\n  ";
+                div1.id = "idGridBlock" + idGridBlock;
+                div1.setAttribute("onclick", "clik1('" + div1.id + "')");
+                div1.style.background = "gray";
+                document.getElementById('container').appendChild(div1);
+                idGridBlock = idGridBlock + 1;
+            } else if (i % 4 == 2 || i % 4 == 1) {
+                var div1 = document.createElement('div');
+                div1.className = 'grid-item';
+                div1.setAttribute('style', 'white-space: pre;');
+                div1.textContent = " " + "\r\n " + noReserved + "\r\n 100$";
+                div1.id = "idGridBlock" + idGridBlock;
+                div1.setAttribute("onclick", "clik1('" + div1.id + "')");
+                div1.style.background = "green";
+                document.getElementById('container').appendChild(div1);
+                noReserved = noReserved + 1;
+                idGridBlock = idGridBlock + 1;
+            } else {
+                var div1 = document.createElement('div');
+                div1.className = 'grid-item';
+                div1.setAttribute('style', 'white-space: pre;');
+                div1.textContent = "res" + "\r\n " + noReserved + "\r\n 100$";
+                div1.id = "idGridBlock" + idGridBlock;
+                div1.setAttribute("onclick", "clik1('" + div1.id + "')");
+                div1.style.background = "red";
+                document.getElementById('container').appendChild(div1);
+                noReserved = noReserved + 1;
+                idGridBlock = idGridBlock + 1;
+            }
+        }
+    }
+    setMapDetails();
+}
+
+function calculatePriceDetails() {
+    var gridItems = document.getElementsByClassName('grid-item');
+    var index;
+    var totalPrice = 0;
+    for (index = 0; index < gridItems.length; index++) {
+        if (gridItems[index].style.backgroundColor == "red") {
+            var txtCnt = "";
+            var splitted = gridItems[index].textContent.split("\r\n ");
+            if (splitted[0] != "res") totalPrice = totalPrice + Number(splitted[2].substring(0, splitted[2].length - 1));
+        }
+    }
+    document.getElementById('totalPrice').innerHTML = totalPrice;
+
+}

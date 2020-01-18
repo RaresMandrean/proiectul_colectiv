@@ -8,10 +8,11 @@
         <a class="mr-2" href="{% url 'user-events' object.organiser.username %}">{{ object.author }}</a>
         <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
           <div>
-            {% if view.is_going is False %}
-              <a class="btn btn-success btn-sm mt-1 mb-1" data-toggle="modal" data-target="#modalRateForm">Join</a>
+            {% if views.is_going is False %}
+              <a class="btn btn-success btn-sm mt-1 mb-1 join" data-toggle="modal" data-target="#modalRateForm" id="{{object.id}}"
+                 href="{% url 'join-event' object.id %}">Join</a>
             {% else %}
-              <a class="btn btn-secondary btn-sm mt-1 mb-1">Join</a>
+              <a class="btn btn-secondary btn-sm mt-1 mb-1 join" id="{{ object.id }}" href="{% url 'join-event' object.id %}">Join</a>
             {% endif %}
             {% if object.organiser == user %}
               <a class="btn btn-primary btn-sm mt-1 mb-1" href="{% url 'event-update' object.id %}">Update</a>

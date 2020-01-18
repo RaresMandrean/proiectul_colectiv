@@ -7,7 +7,8 @@ from .views import (
     EventDeleteView,
     UserEventListView,
     OrganiserListView,
-    change_organiser_status
+    change_organiser_status,
+    join_event
 )
 from . import views
 
@@ -18,6 +19,7 @@ urlpatterns = [
     path('event/new/', EventCreateView.as_view(), name='event-create'),
     path('event/<int:pk>/update/', EventUpdateView.as_view(), name='event-update'),
     path('event/<int:pk>/delete/', EventDeleteView.as_view(), name='event-delete'),
+    path('event/<int:pk>/join/', join_event, name='join-event'),
     path('organisers/', OrganiserListView.as_view(), name='event-organisers'),
     path('organisers/organiser-status/', change_organiser_status, name='organiser-status'),
     path('event/new/EventAddSeatsLocation', views.eventAddSeatsLocation, name='event-addSeatsLocation'),

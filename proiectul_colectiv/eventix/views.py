@@ -4,6 +4,8 @@ from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.conf import settings
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 
 from django.views.generic import (
@@ -32,6 +34,54 @@ class EventListView(ListView):
     context_object_name = 'events'
     ordering = ['-date_posted']
     paginate_by = 5
+
+    def get(self, request, *args, **kwargs):
+        events = self.apply_filter(Event.objects.all(), request.GET)
+
+        paginator = Paginator(events, self.paginate_by)
+        page = request.GET.get('page')
+
+        try:
+            events = paginator.page(page)
+        except PageNotAnInteger:
+            events = paginator.page(1)
+        except EmptyPage:
+            events = paginator.page(paginator.num_pages)
+
+        context = {
+            'events': events
+        }
+        return render(request, "eventix/home.html", context)
+
+    def apply_filter(self, events, filters):
+        # get filters
+        text_filter = filters.get('text_filter')
+        organiser_name = filters.get('organiser_name')
+        location_name = filters.get('location_name')
+        minimum_rating = filters.get('minimum_rating')
+        start_date = filters.get('start_date')
+        end_date = filters.get('end_date')
+
+        # if advanced filters are applied, apply the text filter only on title and content
+        if text_filter:
+            events = events.filter(Q(title__icontains=text_filter) |
+                                   Q(content__icontains=text_filter))
+        if organiser_name:
+            events = events.filter(Q(organiser__first_name__icontains=organiser_name) |
+                                   Q(organiser__last_name__icontains=organiser_name) |
+                                   Q(organiser__username__icontains=organiser_name))
+        if location_name:
+            events = events.filter(Q(location__name__icontains=location_name) |
+                                   Q(location__city__icontains=location_name) |
+                                   Q(location__address__icontains=location_name))
+        if minimum_rating:
+            events = events.filter(Q(ratings__average__gte=minimum_rating))
+        if start_date:
+            events = events.filter(Q(event_date__gte=start_date))
+        if end_date:
+            events = events.filter(Q(event_date__lte=end_date))
+
+        return events
 
 
 class UserEventListView(ListView):

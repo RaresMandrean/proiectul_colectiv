@@ -1,5 +1,7 @@
 {% extends "eventix/base.html" %}
+{% load group_checks %}
 {% load crispy_forms_tags %}
+
 {% block content %}
     <div class="content-section">
       <div class="media">
@@ -13,6 +15,13 @@
           {% csrf_token %}
           <fieldset class="form-group">
               <legend class="border-bottom mb-4">Profile Info</legend>
+              {% if user.is_organiser and user|is_approved_organiser %}
+                  <p>You have been approved as an event organiser.</p>
+              {% elif user.is_organiser and user|is_rejected_organiser %}
+                  <p>You have been rejected as an event organiser.</p>
+              {% elif user.is_organiser %}
+                  <p>Your request to be recognised as an event organiser is still pending.</p>
+              {% endif %}
               {{ u_form|crispy }}
               {{ p_form|crispy }}
           </fieldset>

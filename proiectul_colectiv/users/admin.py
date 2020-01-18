@@ -9,7 +9,11 @@ class CustomUserAdmin(UserAdmin):
     add_form = UserRegisterForm
     form = UserUpdateForm
     model = CustomUser
-    list_display = ['email', 'username']
+    list_display = ['email', 'username', 'is_organiser']
+
+    fieldsets = UserAdmin.fieldsets + (
+        ('Organiser status', {'fields': ('is_organiser', )}),
+    )
 
 
 admin.site.register(Profile)

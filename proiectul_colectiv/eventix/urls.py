@@ -5,7 +5,6 @@ from .views import (
     EventCreateView,
     EventUpdateView,
     EventDeleteView,
-    eventAddSeatsLocation,
     UserEventListView,
     OrganiserListView,
     change_organiser_status

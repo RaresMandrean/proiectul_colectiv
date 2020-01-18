@@ -32,7 +32,6 @@ var n,m;
                 minLimit=Number(document.getElementById('minLimit').value);
                 maxLimit=Number(document.getElementById('maxLimit').value);
                 price1=Number(document.getElementById('price1').value);
-                console.log(price1);
                 if(maxLimit!==0 && !isNaN(maxLimit) && !isNaN(minLimit) && !isNaN(price1))
                     for(i=minLimit;i<=maxLimit;i++){
                         var gridBlock=getElementByNumber(Number(i));
@@ -49,7 +48,7 @@ var n,m;
             	            gridBlock.textContent=txtCnt;
                         }
                     }
-                else {console.log(maxLimit,minLimit,price1);document.getElementById("warningPrice1").textContent="The values are incorrect !!";}
+                else {document.getElementById("warningPrice1").textContent="The values are incorrect !!";}
             }
         }
         function putPrices2(){
@@ -127,8 +126,6 @@ var n,m;
             isGenerated=true;
             n=Number(document.getElementById('height').value);
             m=Number(document.getElementById('width').value);
-            //document.getElementById('label1').innerHTML=n;
-            //document.getElementById('label2').innerHTML=m;
             var div = document.createElement('div');
             div.className='grid-container';
             div.id='container';
@@ -163,7 +160,6 @@ var n,m;
                 if(gridItems[x].style.backgroundColor==="green" || gridItems[x].style.backgroundColor==="red")
                 {
                     var splitted=gridItems[x].textContent.split("\r\n ");
-                    console.log(splitted);
                     if(splitted[1]==number) {
                         return gridItems[x];
                     }
@@ -199,12 +195,11 @@ var n,m;
         }
         $(document).ready();
         function eventSubmitLocation() {
-            console.log("intra aici");
             $.ajax({
                 method: "POST",
                 url: "EventAddSeatsLocation",
                 dataType: "JSON",
                 data: getLocation(),
-                success: alert("It worked"),
+                success: alert("Location has been added !"),
             });
         }

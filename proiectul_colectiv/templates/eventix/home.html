@@ -1,4 +1,6 @@
 {% extends "eventix/base.html" %}
+{% load ratings %}
+{% load app_filters %}
 {% block content %}
     <form method="GET">
         <div class="row mb-4">
@@ -12,14 +14,37 @@
     </form>
 
     {% for event in events %}
+        <style>
+        .hide-rating-info .star-ratings-rating-average { display: none; } .star-ratings-rating-count { display: none; }
+        .star-ratings-rating-user { display: none; }
+        </style>
         <article class="media content-section">
           <div class="media-body">
             <div class="article-metadata">
               <a class="mr-2" href="{% url 'user-events' event.organiser.username %}">{{ event.organiser }}</a>
               <small class="text-muted">{{ event.date_posted|date:"F d, Y"}}</small>
             </div>
-            <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
-            <p class="article-content">{{ event.content }}</p>
+            <div class="floating-divs" style="overflow:hidden">
+                <div class="floating-title" style="float: left">
+                    <h2><a class="article-title" href="{% url 'event-detail' event.id %}">{{ event.title }}</a></h2>
+                </div>
+                <div class="hide-rating-info" style="float: right">{% ratings event read_only=True %}</div>
+            </div>
+            {% if event.poster %}
+                <div class="text-center">
+                <a href="{% url 'event-detail' event.id %}">
+                <img src="{{ event.poster.url }}" class="rounded" width="500px" height="300px" alt="Event presentation poster">
+                </a>
+                </div>
+            {% endif %}
+            {% if event.content|length > 50 %}
+                <p class="article-content">
+                {{ event.content|safe|truncatewords:"50"|linebreaks }}
+                <a href="{% url 'event-detail' event.id %}">Read more...</a>
+                </p>
+            {% else %}
+                <br><p class="article-content">{{ event.content }}</p>
+            {% endif %}
           </div>
         </article>
     {% endfor %}
@@ -45,3 +70,71 @@
 
     {% endif %}
 {% endblock content %}
+{% block content-sidebar %}
+    <div class="content-section">
+            <h3>Info Sidebar</h3>
+            <p class='text-muted'>You can put any information here you'd like.
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-light">Recommended Events:
+                    {% if events|length == 0 or events|length == events|count_none %}
+                        No Events to recommend yet...
+                    {% else %}
+                        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+                          <!-- Indicators -->
+                          <ol class="carousel-indicators">
+                              {% for event in events %}
+                                {% if forloop.first %}
+                                    {% if event.poster %}
+                                        <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}" class="active"></li>
+                                    {% endif %}
+                                {% else %}
+                                    {% if event.poster %}
+                                        <li data-target="#myCarousel" data-slide-to="{{ forloop.counter }}"></li>
+                                    {% endif %}
+                                {% endif %}
+                            {%  endfor %}
+                          </ol>
+                        <div class="carousel-inner">
+                            {% for event in events %}
+                                {% if forloop.first %}
+                                    {% if event.poster %}
+                                        <div class="carousel-item active">
+                                        <div class="text-center">
+                                        {{event.title}}</div>
+                                        <a href="{% url 'event-detail' event.id %}">
+                                        <img src="{{ event.poster.url }}" style="width:100%;height:300px" alt="Event presentation poster">
+                                        </a>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    {% if event.poster %}
+                                        <div class="carousel-item">
+                                        <div class="text-center">
+                                        {{event.title}}</div>
+                                        <a href="{% url 'event-detail' event.id %}">
+                                        <img src="{{ event.poster.url }}" style="width:100%;height:300px" alt="Event presentation poster">
+                                        </a>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            {%  endfor %}
+                        </div>
+
+                          <!-- Left and right controls -->
+                          <a class="carousel-control-prev" href="#myCarousel" data-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                          </a>
+                          <a class="carousel-control-next" href="#myCarousel" data-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                          </a>
+                        </div>
+                {% endif %}
+                </li>
+                <li class="list-group-item list-group-item-light">Announcements</li>
+                <li class="list-group-item list-group-item-light">Calendars</li>
+                <li class="list-group-item list-group-item-light">etc</li>
+              </ul>
+            </p>
+    </div>
+
+{% endblock %}

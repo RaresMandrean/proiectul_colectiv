@@ -174,7 +174,7 @@ var n,m;
             var mapWidth=document.getElementById("width").value;
             var mapHeight=document.getElementById("height").value;
             var arr=[];
-            var location={name: locationName, city: locationCity, address: locationAddress, maximum_number_of_seats: Number(mapWidth)*Number(mapHeight)};
+            var location={name: locationName, city: locationCity, address: locationAddress, width: Number(mapWidth), height:Number(mapHeight)};
             arr.push(location);
             var seats=document.getElementsByClassName("grid-item");
             for(var i=0;i<seats.length;i++){

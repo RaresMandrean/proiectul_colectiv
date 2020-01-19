@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
+from django import utils
 
 from django.views.generic import (
     ListView,
@@ -143,7 +144,25 @@ class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.organiser:
             return True
         return False
+class EventSeatsListView(LoginRequiredMixin, ListView):
+    model = Seat
+    def get_queryset(self):
+        lista = Seat.objects.all()
+        lista=[]
+        for i in Seat.objects.all:
+            lista.append(i)
+        json_list = utils.simplejson.dumps(lista)
+        return render("eventix/join_event", {'list_objects':lista})
 
+class EventListEventUserView(LoginRequiredMixin, ListView):
+    model = CustomUser
+    context_object_variable = "userevents"
+
+class EventSendEventToJoinView(LoginRequiredMixin):
+    model = Event
+    def get_queryset(self):
+        event = get_object_or_404(Event, id=self.kwargs.get('pk'))
+        return event
 
 def join_event(request, pk):
     event = get_object_or_404(Event, id=pk)
@@ -153,6 +172,19 @@ def join_event(request, pk):
         'seats': seats,
     })
 
+def join_event_toDB(request,pk):
+    if request.is_ajax():
+        eventid=request.GET.get("eventId")
+        locationName=request.GET.get("location")
+        position=request.GET.get("position")
+        price=request.GET.get("price")
+        location=get_object_or_404(Location, name=locationName)
+        event=get_object_or_404(Event, id=pk)
+        seat=get_object_or_404(Seat, location=location, position=position)
+        Seat.objects.filter(id=seat.id).update(special_seat=True)
+        UserEvent.objects.create(user=request.user, event=event, seat=seat, price=price)
+        return HttpResponse("")
+    return HttpResponse("")
 
 def eventAddSeatsLocation(request):
     if request.is_ajax():

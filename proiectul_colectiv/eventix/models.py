@@ -46,6 +46,6 @@ class Seat(models.Model):
 
 class UserEvent(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='participant')
-    event = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     seat = models.ForeignKey(Seat, on_delete=models.CASCADE, blank=True, null=True)
     price = models.PositiveIntegerField(null=True)

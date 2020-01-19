@@ -1,16 +1,19 @@
 {% extends "eventix/base.html" %}
 {% load crispy_forms_tags %}
+{% load seats_list %}
+
 {% block content %}
 
 <label id='label1'></label>
 <label id='label2'></label>
-<button onclick="generateMapDetails();">See the Map</button>
-<br><br>
+    <button onclick="generateMapDetails( {{ event.location.width }},{{ event.location.height }}, {{ seats|seats_list|safe }}, {{ user|reserved_list:event|safe }} )" >See the Map</button>
+    <button onclick="submitChosenSeat({{ event.id }},{{ user.id }},'{{ event.location.name }}')">Submit</button>
+    <br><br>
 Selected Seats:
 <label id='labelSelectedSeats'></label>
 <br><br>
 Total Price:
 <label id='totalPrice'></label>
 <br><br>
-
+    <div id="grid-container"></div>
 {% endblock content %}

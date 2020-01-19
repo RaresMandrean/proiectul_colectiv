@@ -7,6 +7,7 @@ from django.conf import settings
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
+from django import utils
 
 from django.views.generic import (
     ListView,
@@ -15,8 +16,9 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from eventix.models import Event, Seat, Location
+
 from eventix.forms import EventForm
+from eventix.models import Event, Seat, Location, UserEvent
 from users.models import CustomUser
 import json
 
@@ -100,10 +102,11 @@ class EventDetailView(DetailView):
 
     def is_going(self):
         try:
-            Seat.objects.get(location=self.object.location, reserved_to=self.request.user)
+            Seat.objects.get(location=self.object.location)
             return True
         except ObjectDoesNotExist as e:
             return False
+
 
 class EventCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Event
@@ -141,19 +144,71 @@ class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.organiser:
             return True
         return False
+class EventSeatsListView(LoginRequiredMixin, ListView):
+    model = Seat
+    def get_queryset(self):
+        lista = Seat.objects.all()
+        lista=[]
+        for i in Seat.objects.all:
+            lista.append(i)
+        json_list = utils.simplejson.dumps(lista)
+        return render("eventix/join_event", {'list_objects':lista})
 
+class EventListEventUserView(LoginRequiredMixin, ListView):
+    model = CustomUser
+    context_object_variable = "userevents"
+
+class EventSendEventToJoinView(LoginRequiredMixin):
+    model = Event
+    def get_queryset(self):
+        event = get_object_or_404(Event, id=self.kwargs.get('pk'))
+        return event
+
+def join_event(request, pk):
+    event = get_object_or_404(Event, id=pk)
+    seats = Seat.objects.all().filter(location=event.location)
+    return render(request, 'eventix/join_event.html', {
+        'event': event,
+        'seats': seats,
+    })
+
+def join_event_toDB(request,pk):
+    if request.is_ajax():
+        eventid=request.GET.get("eventId")
+        locationName=request.GET.get("location")
+        position=request.GET.get("position")
+        price=request.GET.get("price")
+        location=get_object_or_404(Location, name=locationName)
+        event=get_object_or_404(Event, id=pk)
+        seat=get_object_or_404(Seat, location=location, position=position)
+        Seat.objects.filter(id=seat.id).update(special_seat=True)
+        UserEvent.objects.create(user=request.user, event=event, seat=seat, price=price)
+        return HttpResponse("")
+    return HttpResponse("")
 
 def eventAddSeatsLocation(request):
     if request.is_ajax():
-        requestString=""
+        requestString = ""
         for x in request.POST.dict():
-            requestString=x
-        requestJSON=json.loads(requestString)
-        location = Location.objects.create(name=requestJSON[0]["name"], city=requestJSON[0]["city"], address=requestJSON[0]["address"], width=requestJSON[0]["width"], height=requestJSON[0]["height"])
+            requestString = x
+        requestJSON = json.loads(requestString)
+        location = Location.objects.create(name=requestJSON[0]["name"], city=requestJSON[0]["city"],
+                                           address=requestJSON[0]["address"],
+                                           width=requestJSON[0]["width"], height=requestJSON[0]["height"])
         for i in range(1, len(requestJSON)):
-            Seat.objects.create(position=requestJSON[i]["position"],location=location,price=requestJSON[i]["price"],special_seat=requestJSON[i]["special_seat"])
+            Seat.objects.create(position=requestJSON[i]["position"], location=location, price=requestJSON[i]["price"],
+                                special_seat=requestJSON[i]["special_seat"])
         return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
     return render(request, 'eventix/event_form.html', {'title': 'event-addSeatsLocation'})
+
+
+def add_user_to_event(request, pk):
+    if request.method == 'GET':
+        current_user = request.user
+        event = get_object_or_404(Event, id=pk)
+        return HttpResponse(status=200)
+    return HttpResponse('User cannot join the event')
+
 
 class OrganiserListView(LoginRequiredMixin, ListView):
     model = CustomUser

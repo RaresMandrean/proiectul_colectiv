@@ -203,3 +203,175 @@ var n,m;
                 success: alert("Location has been added !"),
             });
         }
+
+var selectedSeats = [];
+var totalPrice=0;
+var isSelected = false;
+
+function clik1(gridBlockId) {
+    var txtCnt = "";
+    var gridItem = document.getElementById(gridBlockId);
+    var splitted = gridItem.textContent.split("\r\n ");
+    if (splitted[0] != "res") {
+        if (document.getElementById(gridBlockId).style.backgroundColor == "green" && isSelected == false) {
+            document.getElementById(gridBlockId).style.background = "red";
+            isSelected = true;
+            selectedSeats.push(document.getElementById(gridBlockId));
+            console.log(gridBlockId);
+        } else if (document.getElementById(gridBlockId).style.backgroundColor == "red") {
+            document.getElementById(gridBlockId).style.background = "green";
+            isSelected = false;
+            for (var i = 0; i < selectedSeats.length; i++) {
+                if (selectedSeats[i] === document.getElementById(gridBlockId)) {
+                    selectedSeats.splice(i, 1);
+                }
+            }
+        }
+        if(selectedSeats.length!=0){
+            document.getElementById('labelSelectedSeats').innerHTML = selectedSeats[0].textContent.split("\r\n ")[1];
+            calculatePriceDetails();
+        }
+        else{
+            document.getElementById('labelSelectedSeats').innerHTML="";
+            document.getElementById('totalPrice').innerHTML="";
+        }
+    }
+}
+
+function setMapDetails() {
+    var i;
+    var elements = document.getElementsByClassName('grid-item');
+    for (i = 0; i < elements.length; i++) {
+        if (elements[i].style.backgroundColor == "gray") {
+            elements[i].style.visibility = 'hidden';
+        }
+    }
+}
+
+function isGreen(id, seats){
+    for(var i=0;i<seats.length;i++){
+        if(id==seats[i].position && seats[i].special_seat=="false")
+            return seats[i];
+    }
+    return false;
+}
+function isRed(id,seats){
+    for(var i=0;i<seats.length;i++){
+        if(id==seats[i].position && seats[i].special_seat=="true")
+            return seats[i];
+    }
+    return false;
+}
+function isYellow(id,seats,isReserved){
+    if(id==isReserved.position)
+        return isReserved;
+    return false;
+}
+
+function generateMapDetails(width,height,seats, isReserved) {
+    var n, m, i, j;
+    isGenerated = true;
+    n = width;
+    m = height;
+    var nrColumns = "";
+    for (i = 0; i < m - 1; i++)
+        nrColumns = nrColumns + "auto ";
+    nrColumns = nrColumns + "auto";
+    var div=document.getElementById("grid-container");
+    div.style.gridTemplateColumns = nrColumns;
+    div.style.display='grid';
+    var idGridBlock = 0;
+    var noReserved = 0;
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < m; j++) {
+            var id=idGridBlock;
+            var div1;
+            var isYel=isYellow(id,seats,isReserved);
+            if (isReserved!="not reserved" && isYel!=false) {
+                div1 = document.createElement('div');
+                div1.className = 'grid-item';
+                div1.setAttribute('style', 'white-space: pre;');
+                div1.textContent = "res " + "\r\n " + noReserved + "\r\n " + isYel.price + "$";
+                div1.id = "idGridBlock" + idGridBlock;
+                div1.style.background = "yellow";
+                div1.style.border = "1px solid rgba(0, 0, 0, 0.8)";
+                div.appendChild(div1);
+                noReserved = noReserved + 1;
+                idGridBlock = idGridBlock + 1;
+            }
+            else {
+                var isGr=isGreen(id,seats);
+                if (seats.length!=noReserved && isGr!=false) {
+                div1 = document.createElement('div');
+                div1.className = 'grid-item';
+                div1.setAttribute('style', 'white-space: pre;');
+                div1.textContent = " " + "\r\n " + noReserved + "\r\n "+isGr.price+"$";
+                div1.id = "idGridBlock" + idGridBlock;
+                if(isReserved=="not reserved") div1.setAttribute("onclick", "clik1('" + div1.id + "')");
+                div1.style.background = "green";
+                div1.style.border="1px solid rgba(0, 0, 0, 0.8)";
+                div.appendChild(div1);
+                noReserved = noReserved + 1;
+                idGridBlock = idGridBlock + 1;
+                } else{
+                    isRd=isRed(id,seats);
+                    if(seats.length!=noReserved && isRd!=false){
+                    div1 = document.createElement('div');
+                    div1.className = 'grid-item';
+                    div1.setAttribute('style', 'white-space: pre;');
+                    div1.textContent = "res" + "\r\n " + noReserved + "\r\n "+seats[noReserved].price+"$";
+                    div1.id = "idGridBlock" + idGridBlock;
+                    if(isReserved=="not reserved")div1.setAttribute("onclick", "clik1('" + div1.id + "')");
+                    div1.style.background = "red";
+                    div1.style.border="1px solid rgba(0, 0, 0, 0.8)";
+                    div.appendChild(div1);
+                    noReserved = noReserved + 1;
+                    idGridBlock = idGridBlock + 1;
+                    } else{
+                        div1 = document.createElement('div');
+                        div1.className = 'grid-item';
+                        div1.setAttribute('style', 'white-space: pre;');
+                        div1.textContent = " " + "\r\n  " + "\r\n  ";
+                        div1.id = "idGridBlock" + idGridBlock;
+                        div1.setAttribute("onclick", "clik1('" + div1.id + "')");
+                        div1.style.background = "gray";
+                        div.appendChild(div1);
+                        idGridBlock = idGridBlock + 1;
+                    }
+                }
+            }
+        }
+    }
+    setMapDetails();
+}
+
+function calculatePriceDetails() {
+    var gridItems = document.getElementsByClassName('grid-item');
+    var index;
+    totalPrice=0;
+    for (index = 0; index < gridItems.length; index++) {
+        if (gridItems[index].style.backgroundColor == "red") {
+            var txtCnt = "";
+            var splitted = gridItems[index].textContent.split("\r\n ");
+            if (splitted[0] != "res") totalPrice = totalPrice + Number(splitted[2].substring(0, splitted[2].length - 1));
+        }
+    }
+    document.getElementById('totalPrice').innerHTML = totalPrice;
+
+}
+
+function getChosenSeat(userid,eventid,locationName){
+    var seatToBeAdded=selectedSeats[0];
+    splitted=seatToBeAdded.textContent.split("\r\n ");
+    result={eventId:eventid,userId:userid,position:seatToBeAdded.id.substring(11,seatToBeAdded.id.length),location:locationName,price:Number(splitted[2].substring(0,splitted[2].length-1))};
+    return result
+}
+function submitChosenSeat(userid,eventid,locationName) {
+            $.ajax({
+                method: "GET",
+                url: "UserEvent",
+                dataType: "JSON",
+                data: getChosenSeat(userid,eventid,locationName),
+                success: alert("Location has been added !"),
+            });
+        }

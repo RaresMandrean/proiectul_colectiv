@@ -41,5 +41,11 @@ class Seat(models.Model):
     position = models.PositiveIntegerField()
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True, blank=True)
     price = models.PositiveIntegerField()
-    reserved_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
     special_seat = models.BooleanField(default=False)  # devine rosu si nu poate fi selectat daca e True pe "harta"
+
+
+class UserEvent(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='participant')
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    seat = models.ForeignKey(Seat, on_delete=models.CASCADE, blank=True, null=True)
+    price = models.PositiveIntegerField(null=True)

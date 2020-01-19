@@ -5,4 +5,8 @@ register = template.Library()
 
 @register.filter
 def count_none(value):
-    return value.filter(poster__isnull=True).count()
+    counter = 0
+    for element in value:
+        if not element.poster:
+            counter += 1
+    return counter
